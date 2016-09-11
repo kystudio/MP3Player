@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.kystudio.mp3player.MP3ListActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/update"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/mp3list.update"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="100"
+        android:title="@string/mp3list.about"
         app:showAsAction="never" />
 </menu>
