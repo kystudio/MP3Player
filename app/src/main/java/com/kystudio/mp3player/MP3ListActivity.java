@@ -6,6 +6,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kystudio.download.HttpDownloader;
+import com.kystudio.model.Mp3Info;
+import com.kystudio.xml.Mp3ListContentHandler;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.parsers.SAXParserFactory;
 
 public class MP3ListActivity extends ListActivity {
     private static final int UPDATE = 1;
@@ -41,7 +53,6 @@ public class MP3ListActivity extends ListActivity {
         //noinspection SimplifiableIfStatement
         if (id == UPDATE) {
             downloadXML("http://172.28.19.115:8080/MP3/resource.xml");
-
             return true;
         } else if (id == ABOUT) {
 
@@ -56,6 +67,27 @@ public class MP3ListActivity extends ListActivity {
         md.start();
     }
 
+    private List<Mp3Info> parse(String xmlStr){
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        System.out.println("xmlStr:" + xmlStr);
+        try {
+            XMLReader xmlReader = saxParserFactory.newSAXParser().getXMLReader();
+            List<Mp3Info> infos = new ArrayList<Mp3Info>();
+            Mp3ListContentHandler mp3ListContentHandler = new Mp3ListContentHandler(infos);
+            xmlReader.setContentHandler(mp3ListContentHandler);
+            xmlReader.parse(new InputSource(new StringReader(xmlStr)));
+
+            for (Iterator iterator = infos.iterator();iterator.hasNext();){
+                Mp3Info mp3Info = (Mp3Info) iterator.next();
+                System.out.println("mp3Info:" + mp3Info);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     class MyDownloadThread extends Thread
     {
         private String urlStr;
@@ -66,8 +98,8 @@ public class MP3ListActivity extends ListActivity {
         public void run() {
             HttpDownloader httpDownloader = new HttpDownloader();
             String result = httpDownloader.downloadTxt(urlStr);
-            //MP3ListActivity.this.xml = result;
-            System.out.println("result:" + result);
+
+            parse(result);
         }
     }
 }
