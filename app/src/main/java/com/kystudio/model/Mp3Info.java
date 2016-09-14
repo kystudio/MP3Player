@@ -1,9 +1,12 @@
 package com.kystudio.model;
 
+import java.io.Serializable;
+
 /**
  * Created by 20236320 on 2016/9/12.
  */
-public class Mp3Info {
+public class Mp3Info implements Serializable {
+
     private String id;
     private String mp3Name;
     private String mp3Size;

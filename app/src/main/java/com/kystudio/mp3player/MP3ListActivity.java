@@ -1,6 +1,7 @@
 package com.kystudio.mp3player;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.widget.SimpleAdapter;
 
 import com.kystudio.download.HttpDownloader;
 import com.kystudio.model.Mp3Info;
+import com.kystudio.mp3player.service.DownloadService;
 import com.kystudio.xml.Mp3ListContentHandler;
 
 import org.xml.sax.InputSource;
@@ -39,6 +41,12 @@ public class MP3ListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        Mp3Info mp3Info = mp3Infos.get(position);
+
+        Intent intent = new Intent();
+        intent.putExtra("mp3Info",mp3Info);
+        intent.setClass(this, DownloadService.class);
+        startService(intent);
         super.onListItemClick(l, v, position, id);
     }
 
@@ -72,7 +80,10 @@ public class MP3ListActivity extends ListActivity {
     }
 
     private void updateListView() {
-        downloadXML("http://172.28.19.115:8080/MP3/resource.xml");
+        // 公司电脑的IP
+        // downloadXML("http://172.28.19.115:8080/MP3/resource.xml");
+        // 家里电脑的IP
+        downloadXML("http://192.168.3.105:8080/MP3/resource.xml");
     }
 
     private void downloadXML(String urlStr) {
