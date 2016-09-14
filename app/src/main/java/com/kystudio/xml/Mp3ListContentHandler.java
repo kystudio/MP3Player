@@ -27,10 +27,10 @@ public class Mp3ListContentHandler extends DefaultHandler {
 
     @Override
     public void endDocument() throws SAXException {
-        if (tagName.equals("reosource")) {
-            infos.add(mp3Info);
-        }
-        tagName = null;
+//        if (tagName.equals("reosource")) {
+//            infos.add(mp3Info);
+//        }
+//        tagName = null;
     }
 
     @Override
@@ -43,10 +43,10 @@ public class Mp3ListContentHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-//        this.tagName = localName;
-//        if (tagName.equals("reosource")) {
-//            infos.add(mp3Info);
-//        }
+        if (qName.equals("resource")) {
+            infos.add(mp3Info);
+        }
+        tagName = "";
     }
 
     @Override

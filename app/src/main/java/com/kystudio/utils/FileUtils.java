@@ -1,4 +1,4 @@
-package com.kystudio.download;
+package com.kystudio.utils;
 
 import android.os.Environment;
 
@@ -12,14 +12,10 @@ import java.io.OutputStream;
  * Created by 20236320 on 2016/8/14.
  */
 public class FileUtils {
-    private String SDPATH;
-
-    public String getSDPATH() {
-        return SDPATH;
-    }
+    private String SDCardRoot;
 
     public FileUtils() {
-        SDPATH = Environment.getExternalStorageDirectory() + "/";
+        SDCardRoot = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
     }
 
     /**
@@ -28,22 +24,22 @@ public class FileUtils {
      * @param fileName
      * @return
      */
-    public boolean isFileExist(String fileName) {
-        File file = new File(SDPATH + fileName);
+    public boolean isFileExist(String fileName, String path) {
+        File file = new File(SDCardRoot + path + File.separator + fileName);
         return file.exists();
     }
 
     /**
      * 在SD卡上创建目录
      *
-     * @param dirName
+     * @param dir
      * @return
      */
-    public File createSDDir(String dirName) {
-        File dir = new File(SDPATH + dirName);
-        dir.mkdir();
+    public File createSDDir(String dir) {
+        File dirFile = new File(SDCardRoot + dir + File.separator);
+        dirFile.mkdir();
 
-        return dir;
+        return dirFile;
     }
 
     /**
@@ -53,8 +49,8 @@ public class FileUtils {
      * @return
      * @throws IOException
      */
-    public File createSDFile(String fileName) throws IOException {
-        File file = new File(SDPATH + fileName);
+    public File createFileInSDCard(String fileName, String dir) throws IOException {
+        File file = new File(SDCardRoot + dir + File.separator + fileName);
         file.createNewFile();
 
         return file;
@@ -74,13 +70,14 @@ public class FileUtils {
 
         try {
             createSDDir(path);
-            file = createSDFile(path + fileName);
+            file = createFileInSDCard(fileName, path);
             output = new FileOutputStream(file);
 
             byte[] buffer = new byte[4 * 1024];
+            int temp;
 
-            while (-1 != (input.read(buffer))) {
-                output.write(buffer);
+            while (-1 != (temp = input.read(buffer))) {
+                output.write(buffer, 0, temp);
             }
             output.flush();
         } catch (Exception e) {

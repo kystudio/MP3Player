@@ -1,5 +1,7 @@
 package com.kystudio.download;
 
+import com.kystudio.utils.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class HttpDownloader {
         try {
             FileUtils fileUtils = new FileUtils();
 
-            if (fileUtils.isFileExist(path + fileName)) {
+            if (fileUtils.isFileExist(fileName, path)) {
                 return 0;
             } else {
                 inputStream = getInputStreamFromUrl(urlStr);
