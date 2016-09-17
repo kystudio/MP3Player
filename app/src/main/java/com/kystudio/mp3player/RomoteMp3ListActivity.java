@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
-public class MP3ListActivity extends ListActivity {
+public class RomoteMp3ListActivity extends ListActivity {
     private static final int UPDATE = 1;
     private static final int ABOUT = 2;
     private List<Mp3Info> mp3Infos = null;
@@ -34,7 +34,7 @@ public class MP3ListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mp3_list);
+        setContentView(R.layout.remote_mp3_list);
 
         updateListView();
     }
@@ -115,7 +115,7 @@ public class MP3ListActivity extends ListActivity {
             map.put("mp3_size", mp3Info.getMp3Size());
             list.add(map);
         }
-        SimpleAdapter simpleAdapter = new SimpleAdapter(MP3ListActivity.this, list, R.layout.mp3info_item, new String[]{"mp3_name", "mp3_size"}, new int[]{R.id.mp3_name, R.id.mp3_size});
+        SimpleAdapter simpleAdapter = new SimpleAdapter(RomoteMp3ListActivity.this, list, R.layout.mp3info_item, new String[]{"mp3_name", "mp3_size"}, new int[]{R.id.mp3_name, R.id.mp3_size});
 
         return simpleAdapter;
     }

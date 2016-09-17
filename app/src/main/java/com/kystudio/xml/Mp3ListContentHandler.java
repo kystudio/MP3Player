@@ -27,10 +27,6 @@ public class Mp3ListContentHandler extends DefaultHandler {
 
     @Override
     public void endDocument() throws SAXException {
-//        if (tagName.equals("reosource")) {
-//            infos.add(mp3Info);
-//        }
-//        tagName = null;
     }
 
     @Override
