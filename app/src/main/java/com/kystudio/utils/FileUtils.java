@@ -2,11 +2,15 @@ package com.kystudio.utils;
 
 import android.os.Environment;
 
+import com.kystudio.model.Mp3Info;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 20236320 on 2016/8/14.
@@ -91,5 +95,26 @@ public class FileUtils {
         }
 
         return file;
+    }
+
+    /**
+     * 读取path中的MP3文件的名字和大小
+     * @param path
+     * @return
+     */
+    public List<Mp3Info> getMp3Files(String path){
+        List<Mp3Info> mp3Infos = new ArrayList<Mp3Info>();
+        File file = new File(SDCardRoot + File.separator + path);
+        File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].getName().endsWith("mp3")) {
+                Mp3Info mp3Info = new Mp3Info();
+                mp3Info.setMp3Name(files[i].getName());
+                mp3Info.setMp3Size(files[i].length() + "");
+                mp3Infos.add(mp3Info);
+            }
+        }
+
+        return mp3Infos;
     }
 }
