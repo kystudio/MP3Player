@@ -9,6 +9,7 @@ import android.os.IBinder;
 
 import com.kystudio.download.HttpDownloader;
 import com.kystudio.model.Mp3Info;
+import com.kystudio.mp3player.AppConstant;
 
 /**
  * Created by kystudio on 2016/9/14.
@@ -35,8 +36,7 @@ public class DownloadService extends Service {
         }
         @Override
         public void run() {
-            // String mp3Url = "http://172.28.19.115:8080/MP3/" + mp3Info.getMp3Name();
-            String mp3Url = "http://192.168.3.105:8080/MP3/" + mp3Info.getMp3Name();
+            String mp3Url = AppConstant.URL.BASE_URL  + mp3Info.getMp3Name();
             HttpDownloader httpDownloader = new HttpDownloader();
             int result = httpDownloader.downloadFile(mp3Url,"mp3",mp3Info.getMp3Name());
             System.out.println("result--->" + result);

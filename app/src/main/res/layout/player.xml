@@ -9,9 +9,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kystudio.mp3player.PlayerActivity">
 
+    <TextView
+        android:id="@+id/lrcText"
+        android:text="lrc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/begin"
         android:text="播放"
+        android:layout_below="@id/lrcText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <Button

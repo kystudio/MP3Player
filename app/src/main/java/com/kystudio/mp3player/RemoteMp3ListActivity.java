@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
-public class RomoteMp3ListActivity extends ListActivity {
+public class RemoteMp3ListActivity extends ListActivity {
     private static final int UPDATE = 1;
     private static final int ABOUT = 2;
     private List<Mp3Info> mp3Infos = null;
@@ -44,7 +44,7 @@ public class RomoteMp3ListActivity extends ListActivity {
         Mp3Info mp3Info = mp3Infos.get(position);
 
         Intent intent = new Intent();
-        intent.putExtra("mp3Info",mp3Info);
+        intent.putExtra("mp3Info", mp3Info);
         intent.setClass(this, DownloadService.class);
         startService(intent);
         super.onListItemClick(l, v, position, id);
@@ -80,10 +80,7 @@ public class RomoteMp3ListActivity extends ListActivity {
     }
 
     private void updateListView() {
-        // 公司电脑的IP
-        // downloadXML("http://172.28.19.115:8080/MP3/resource.xml");
-        // 家里电脑的IP
-        downloadXML("http://192.168.3.105:8080/MP3/resource.xml");
+        downloadXML( AppConstant.URL.BASE_URL + "resource.xml");
     }
 
     private void downloadXML(String urlStr) {
@@ -115,7 +112,7 @@ public class RomoteMp3ListActivity extends ListActivity {
             map.put("mp3_size", mp3Info.getMp3Size());
             list.add(map);
         }
-        SimpleAdapter simpleAdapter = new SimpleAdapter(RomoteMp3ListActivity.this, list, R.layout.mp3info_item, new String[]{"mp3_name", "mp3_size"}, new int[]{R.id.mp3_name, R.id.mp3_size});
+        SimpleAdapter simpleAdapter = new SimpleAdapter(RemoteMp3ListActivity.this, list, R.layout.mp3info_item, new String[]{"mp3_name", "mp3_size"}, new int[]{R.id.mp3_name, R.id.mp3_size});
 
         return simpleAdapter;
     }

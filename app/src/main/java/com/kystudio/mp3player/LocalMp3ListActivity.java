@@ -2,7 +2,6 @@ package com.kystudio.mp3player;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -29,9 +28,7 @@ public class LocalMp3ListActivity extends ListActivity {
     protected void onResume() {
         FileUtils fileUtils = new FileUtils();
         mp3Infos = fileUtils.getMp3Files("mp3/");
-
         List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
         for (Iterator iterator = mp3Infos.iterator(); iterator.hasNext(); ) {
             Mp3Info mp3Info = (Mp3Info) iterator.next();
             HashMap<String, String> map = new HashMap<String, String>();
