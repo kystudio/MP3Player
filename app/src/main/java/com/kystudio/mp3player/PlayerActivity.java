@@ -1,11 +1,15 @@
 package com.kystudio.mp3player;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,16 +29,9 @@ public class PlayerActivity extends Activity {
     private Button beginButton, pauseButton, stopButton;
     private TextView lrcTextView;
 
-    private ArrayList<Queue> queues = null;
     private Mp3Info mp3Info = null;
-    private UpdateTimeCallback updateTimeCallback = null;
-    private Handler handler = new Handler();
-    private long begin = 0;
-    private long nextTimeMill = 0;
-    private long currentTimeMill = 0;
-    private long pauseTimeMill = 0;
-    private String message = null;
-    private boolean isPlaying = false;
+    private IntentFilter intentFilter = null;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,53 +51,6 @@ public class PlayerActivity extends Activity {
         stopButton.setOnClickListener(new StopButtonListener());
     }
 
-    private void prepareLrc(String lrcName) {
-        String lrcPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mp3" + File.separator + lrcName;
-        try {
-            InputStream inputStream = new FileInputStream(lrcPath);
-            LrcProcessor lrcProcessor = new LrcProcessor();
-            queues = lrcProcessor.process(inputStream);
-
-            updateTimeCallback = new UpdateTimeCallback(queues);
-            begin = 0;
-            currentTimeMill = 0;
-            nextTimeMill = 0;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("fileNotFound:" + e);
-        }
-    }
-
-    class UpdateTimeCallback implements Runnable {
-        Queue times = null;
-        Queue messages = null;
-
-        public UpdateTimeCallback(ArrayList<Queue> queues) {
-            times = queues.get(0);
-            messages = queues.get(1);
-        }
-
-        @Override
-        public void run() {
-            // 计算偏移量，也就是说从开始播放MP3到现在为止，共消耗了多少时间，以毫秒未单位
-            long offset = System.currentTimeMillis() - begin;
-            System.out.println("offset---> " + offset);
-            if (0 == currentTimeMill) {
-                nextTimeMill = (long) times.poll();
-                message = (String) messages.poll();
-            }
-
-            if (offset >= nextTimeMill) {
-                lrcTextView.setText(message);
-                message = (String) messages.poll();
-                nextTimeMill = (long) times.poll();
-            }
-
-            currentTimeMill = currentTimeMill + 10;
-            handler.postDelayed(updateTimeCallback, 10);
-        }
-    }
-
     class BeginButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -109,13 +59,7 @@ public class PlayerActivity extends Activity {
             intent.setClass(PlayerActivity.this, PlayerService.class);
             intent.putExtra("mp3Info", mp3Info);
             intent.putExtra("MSG", AppConstant.PlayerMsg.PLAY_MSG);
-            // 读取lrc文件
-            prepareLrc(mp3Info.getLrcName());
             startService(intent);
-            // 将begin的值设置为当前毫秒数
-            begin = System.currentTimeMillis();
-            handler.postDelayed(updateTimeCallback, 5);
-            isPlaying = true;
         }
     }
 
@@ -126,15 +70,6 @@ public class PlayerActivity extends Activity {
             intent.setClass(PlayerActivity.this, PlayerService.class);
             intent.putExtra("MSG", AppConstant.PlayerMsg.PAUSE_MSG);
             startService(intent);
-
-            if (isPlaying){
-                handler.removeCallbacks(updateTimeCallback);
-                pauseTimeMill = System.currentTimeMillis();
-            }else {
-                handler.postDelayed(updateTimeCallback, 5);
-                begin = System.currentTimeMillis() - pauseTimeMill + begin;
-            }
-            isPlaying = isPlaying ? false:true;
         }
     }
 
@@ -145,7 +80,38 @@ public class PlayerActivity extends Activity {
             intent.setClass(PlayerActivity.this, PlayerService.class);
             intent.putExtra("MSG", AppConstant.PlayerMsg.STOP_MSG);
             startService(intent);
-            handler.removeCallbacks(updateTimeCallback);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        receiver = new LrcMessageBroadcastReceiver();
+        registerReceiver(receiver, getIntentFilter());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    /**
+     * 广播接收器，主要作用是接受Service所发送的广播，并且更新UI，也就是放置歌词到TextView
+     */
+    class LrcMessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String lrcMessage = intent.getStringExtra("lrcMessage");
+            lrcTextView.setText(lrcMessage);
+        }
+    }
+
+    private IntentFilter getIntentFilter() {
+        if (intentFilter == null) {
+            intentFilter = new IntentFilter();
+            intentFilter.addAction(AppConstant.LRC_MESSAGE_ACTION);
+        }
+        return intentFilter;
     }
 }

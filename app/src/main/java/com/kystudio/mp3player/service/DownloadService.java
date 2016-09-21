@@ -1,9 +1,6 @@
 package com.kystudio.mp3player.service;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
@@ -25,7 +22,7 @@ public class DownloadService extends Service {
         Mp3Info mp3Info = (Mp3Info) intent.getSerializableExtra("mp3Info");
 
         DownloadThread downloadThread = new DownloadThread(mp3Info);
-        downloadThread.run();
+        new Thread(downloadThread).start();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -39,7 +36,7 @@ public class DownloadService extends Service {
             String mp3Url = AppConstant.URL.BASE_URL  + mp3Info.getMp3Name();
             HttpDownloader httpDownloader = new HttpDownloader();
             int result = httpDownloader.downloadFile(mp3Url,"mp3",mp3Info.getMp3Name());
-            System.out.println("result--->" + result);
+
             String resultMsg = "";
             if (-1 == result){
                 resultMsg = "下载失败";
@@ -48,8 +45,9 @@ public class DownloadService extends Service {
             }else if (1==result){
                 resultMsg = "文件下载成功";
             }
+            System.out.println("result--->" + resultMsg);
             // 使用Notification提示客户下载结果
-            NotificationManager notificationManager = (NotificationManager) DownloadService.this.getSystemService(Context.NOTIFICATION_SERVICE);
+            // NotificationManager notificationManager = (NotificationManager) DownloadService.this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         }
     }

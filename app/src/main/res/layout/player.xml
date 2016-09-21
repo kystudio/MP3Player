@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#036936"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -12,7 +13,9 @@
     <TextView
         android:id="@+id/lrcText"
         android:text="lrc"
-        android:layout_width="wrap_content"
+        android:textColor="#ffffff"
+        android:background="#330246"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button

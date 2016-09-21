@@ -16,4 +16,6 @@ public interface AppConstant {
         // 家里电脑的IP
         // public static final String BASE_URL = "http://192.168.3.105:8080/MP3/";
     }
+
+    public static final String LRC_MESSAGE_ACTION = "com.kystudio.mp3player.lrcmessage.action";
 }

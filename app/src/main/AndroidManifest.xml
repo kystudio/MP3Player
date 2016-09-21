@@ -21,12 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".service.DownloadService" />
-
         <activity android:name=".PlayerActivity" />
         <activity android:name=".RemoteMp3ListActivity" />
 
+        <service android:name=".service.DownloadService" />
         <service
             android:name=".service.PlayerService"
             android:enabled="true"
